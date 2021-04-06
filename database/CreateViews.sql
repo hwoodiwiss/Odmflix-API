@@ -19,3 +19,35 @@ JOIN `ReleaseYears` ON `Shows`.`ReleaseYearId` = `ReleaseYears`.`Id`
 LEFT JOIN `Ratings` ON `Shows`.`RatingId` = `Ratings`.`Id`
 LEFT JOIN `MovieDurations` ON `Shows`.`Id` = `MovieDurations`.`ShowId`
 LEFT JOIN `TvShowDurations` ON `Shows`.`Id` = `TvShowDurations`.`ShowId`;
+
+-- Only Tv Shows
+CREATE OR REPLACE VIEW `vw_TvShows`
+AS
+SELECT 
+	`Id`,
+	`Title`,
+	`DateAdded`,
+	`ReleaseYearId`,
+	`ReleaseYear`,
+	`RatingId`,
+	`Rating`,
+	`Duration`,
+	`Description`
+FROM `vw_Shows`
+WHERE `ShowType` = 'TV Show';
+
+-- Only Movies
+CREATE OR REPLACE VIEW `vw_Movies`
+AS
+SELECT
+	`Id`,
+	`Title`,
+	`DateAdded`,
+	`ReleaseYearId`,
+	`ReleaseYear`,
+	`RatingId`,
+	`Rating`,
+	`Duration`,
+	`Description`
+FROM `vw_Shows`
+WHERE `ShowType` = 'Movie';
