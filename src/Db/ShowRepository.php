@@ -9,7 +9,7 @@ class ShowRepository
 		$this->modelMapper = new Mapper(ShowModel::class);
 	}
 
-	public function GetShowById(int $id): ShowModel
+	public function GetShowById(int $id): ?ShowModel
 	{
 		$stmt = $this->db->prepare('SELECT * FROM vw_Shows WHERE Id = :c0');
 		$stmt->bindValue(':c0', $id, \PDO::PARAM_INT);
@@ -18,11 +18,11 @@ class ShowRepository
 		}
 
 		$data = $stmt->fetchAll();
-		if(count($data) > 0) {
-			throw new \Error("Invalid reponse from a primary key search");
+		if(count($data) !== 1) {
+			return null;
 		}
 		
-		return $this->modelMapper->map($data);
+		return $this->modelMapper->map($data[0]);
 	}
 
 }
