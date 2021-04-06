@@ -1,23 +1,21 @@
 <?php
 
-require_once __DIR__ . '/../../src/Models/ShowModel.php';
 require_once __DIR__ . '/../../src/Db/ShowRepository.php';
-require_once __DIR__ . '/../../src/Controllers/NetflixController.php';
+require_once __DIR__ . '/../../src/Controllers/ShowController.php';
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
-use OdmflixApi\NetflixController;
+use OdmflixApi\ShowController;
 use OdmflixApi\AppConfig;
 use OdmflixApi\ControllerContext;
 use OdmflixApi\NotFoundResult;
 use OdmflixApi\ShowRepository;
 use OdmflixApi\OkResult;
-use OdmflixApi\ShowModel;
 
-class NetflixControllerTest extends TestCase
+class ShowControllerTest extends TestCase
 {
 	private ControllerContext $ctx;
-	private NetflixController $controller;
+	private ShowController $controller;
 	private MockObject $mockShowsRepository;
 
 	protected function setUp(): void
@@ -26,32 +24,32 @@ class NetflixControllerTest extends TestCase
 		$this->appConfig = new AppConfig();
 
 		$this->mockShowsRepository = $this->createMock(ShowRepository::class);
-		$this->controller = new NetflixController($this->mockShowsRepository, $this->ctx);
+		$this->controller = new ShowController($this->mockShowsRepository, $this->ctx);
 	}
 
-	public function testContactController_CtorCanConstruct()
+	public function testShowController_CtorCanConstruct()
 	{
-		$this->assertInstanceOf(NetflixController::class , new NetflixController($this->mockShowsRepository, $this->ctx));
+		$this->assertInstanceOf(ShowController::class , new ShowController($this->mockShowsRepository, $this->ctx));
 	}
 
-	public function testContactController_GETShowReturns404IfShowIsNull()
+	public function testShowController_GETShowReturns404IfShowIsNull()
 	{
 		$this->ctx->RequestMethod = 'POST';
 
 		$this->mockShowsRepository->expects($this->once())->method('GetShowById')->willReturn(null);
 
-		$result = $this->controller->Show(123);
+		$result = $this->controller->ById(123);
 
 		$this->assertInstanceOf(NotFoundResult::class , $result);
 	}
 
-	public function testContactController_GETShowReturnsOkayIfShowIsTruthy()
+	public function testShowController_GETShowReturnsOkayIfShowIsTruthy()
 	{
 		$this->ctx->RequestMethod = 'POST';
 
-		$this->mockShowsRepository->expects($this->once())->method('GetShowById')->willReturn(new ShowModel);
+		$this->mockShowsRepository->expects($this->once())->method('GetShowById')->willReturn(["things" => "stuff"]);
 
-		$result = $this->controller->Show(123);
+		$result = $this->controller->ById(123);
 
 		$this->assertInstanceOf(OkResult::class , $result);
 	}

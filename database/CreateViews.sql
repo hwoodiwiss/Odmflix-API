@@ -3,10 +3,13 @@ CREATE OR REPLACE VIEW `vw_Shows`
 AS
 SELECT 
 	`Shows`.`Id` AS `Id`,
+	`ShowTypes`.`Id` AS `ShowTypeId`,
 	`ShowTypes`.`Name` AS `ShowType`,
 	`Shows`.`Title` AS `Title`,
 	`Shows`.`DateAdded` AS `DateAdded`,
+	`ReleaseYears`.`Id` AS `ReleaseYearId`,
 	`ReleaseYears`.`Year` AS `ReleaseYear`,
+	`Ratings`.`Id` AS `RatingId`,
 	`Ratings`.`Name` AS `Rating`,
 	`Shows`.`Duration` AS `Duration`,
 	`Shows`.`NumSeasons` AS `NumSeasons`,

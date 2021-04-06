@@ -77,7 +77,7 @@ class OdmflixApi
 		Session::StartSession();
 		$this->router
 		->Add((new Route('Home', 'Echo', ['GET'])))
-		->Add((new Route('Netflix', 'Show', ['GET'])))
+		->Add((new Route('Show', 'ById', ['GET'])))
 		->Add((new Route('Options', 'HandleOptions', ['OPTIONS'])));
 
 		$this->controllerCtx = (new ControllerContextBuilder)
