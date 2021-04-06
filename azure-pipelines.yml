@@ -12,7 +12,7 @@ stages:
         steps:
           - checkout: self
             clean: true
-            path: Skylab-Design-API
+            path: Odmflix-API
             displayName: Checkout Source
           - task: CmdLine@2
             inputs:
