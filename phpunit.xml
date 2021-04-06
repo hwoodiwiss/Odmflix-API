@@ -4,7 +4,7 @@
 	colors = "true"
 >
 <testsuites>
-	<testsuite name="Skylab Design UI">
+	<testsuite name="Odmflix API">
 		<directory>./tests</directory>
 	</testsuite>
 </testsuites>
