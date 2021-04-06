@@ -1,6 +1,6 @@
 <?php
 
-namespace SkylabDesignApi;
+namespace OdmflixApi;
 
 class ViewRenderer
 {
