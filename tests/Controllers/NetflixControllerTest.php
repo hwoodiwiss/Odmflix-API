@@ -1,6 +1,7 @@
 <?php
 
-require_once __DIR__ . '/../../src/OdmflixAPI.php';
+require_once __DIR__ . '/../../src/Models/ShowModel.php';
+require_once __DIR__ . '/../../src/Db/ShowRepository.php';
 require_once __DIR__ . '/../../src/Controllers/NetflixController.php';
 
 use PHPUnit\Framework\TestCase;
