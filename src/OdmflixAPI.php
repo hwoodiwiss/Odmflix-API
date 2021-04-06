@@ -77,13 +77,6 @@ class OdmflixApi
 		Session::StartSession();
 		$this->router
 		->Add((new Route('Home', 'Echo', ['GET'])))
-		->Add((new Route('Contact', 'Send', ['POST'])))
-		->Add((new Route('Account', 'Login', ['POST'])))
-		->Add((new Route('Account', 'Logout', ['POST'])))
-		->Add((new Route('Account', 'Refresh', ['POST'])))
-		->Add((new Route('Content', 'Get', ['GET'])))
-		->Add((new Route('User', 'Add', ['POST'])))
-		->Add((new Route('User', 'Update', ['POST'])))
 		->Add((new Route('Options', 'HandleOptions', ['OPTIONS'])));
 
 		$this->controllerCtx = (new ControllerContextBuilder)
@@ -99,14 +92,7 @@ class OdmflixApi
 		$this->diContainer->addInjectable(ControllerContext::class , $this->controllerCtx);
 		$this->diContainer->addInjectable(Session::class);
 		$this->diContainer->addInjectable(Db::class);
-		$this->diContainer->addInjectable(UsersContext::class);
-		$this->diContainer->addInjectable(EditorContentContext::class);
-		$this->diContainer->addInjectable(DateTimeProvider::class);
-		$this->diContainer->addInjectable(JwtProvider::class);
-		$this->diContainer->addInjectable(AuthorisationService::class , SessionAuthorisationService::class);
-		$this->diContainer->addInjectable(RecaptchaService::class);
-		$this->diContainer->addInjectable(EmailService::class);
-		$this->diContainer->addInjectable(UserManagementService::class);
+
 
 	}
 
