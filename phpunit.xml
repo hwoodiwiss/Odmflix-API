@@ -1,0 +1,14 @@
+<phpunit 
+	backupGlobals = "true"
+	processIsolation = "true"
+	colors = "true"
+>
+<testsuites>
+	<testsuite name="Skylab Design UI">
+		<directory>./tests</directory>
+	</testsuite>
+</testsuites>
+<logging>
+	<junit outputFile="junit.xml" />
+</logging>
+</phpunit>

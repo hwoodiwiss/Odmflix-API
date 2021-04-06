@@ -1,0 +1,126 @@
+pool:
+  vmImage: ubuntu-latest
+
+trigger:
+  - main
+
+stages:
+  - stage: Test
+    jobs:
+      - job: UnitTest
+        displayName: Unit Test
+        steps:
+          - checkout: self
+            clean: true
+            path: Skylab-Design-API
+            displayName: Checkout Source
+          - task: CmdLine@2
+            inputs:
+              script: |
+                composer install
+            displayName: Composer Install
+          - task: CmdLine@2
+            inputs:
+              script: |
+                ./vendor/bin/phpunit
+            displayName: Run Tests
+          - task: PublishTestResults@2
+            inputs:
+              testRunner: JUnit
+              testResultsFiles: "**/junit.xml"
+  - stage: DeployDev
+    condition: succeeded()
+    variables:
+      - group: Plesk_FTP
+      - group: OdmflixApi
+    jobs:
+      - job: Deploy
+        displayName: Deploy Dev
+        steps:
+          - checkout: self
+            clean: true
+            path: Odmflix-API
+            displayName: Checkout Source
+          - task: CmdLine@2
+            inputs:
+              script: |
+                composer install --no-dev
+            displayName: Composer Install
+          - task: CmdLine@2
+            inputs:
+              script: |
+                rm -rf $(Pipeline.Workspace)/**/.git*
+                rm -rf $(Pipeline.Workspace)/**/*.yml
+                rm -rf $(Pipeline.Workspace)/**/*.xml
+                rm -rf $(Pipeline.Workspace)/**/tests
+            displayName: Remove Unwanted Files
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sed -i "/^\[database\]$/,/^\[/ s/^host=''/host='$(DatabaseHost)'/" $(Pipeline.Workspace)/Odmflix-API/settings.ini
+                sed -i "/^\[database\]$/,/^\[/ s/^database=''/database='$(DatabaseName)'/" $(Pipeline.Workspace)/Odmflix-API/settings.ini
+                sed -i "/^\[database\]$/,/^\[/ s/^username=''/username='$(DatabaseUser)'/" $(Pipeline.Workspace)/Odmflix-API/settings.ini
+                sed -i "/^\[database\]$/,/^\[/ s/^password=''/password='$(DatabasePassword)'/" $(Pipeline.Workspace)/Odmflix-API/settings.ini
+            displayName: Update Database User
+          - task: FtpUpload@2
+            displayName: Upload To Plesk
+            inputs:
+              credentialsOption: inputs
+              username: $(FtpUser)
+              password: $(FtpPassword)
+              rootDirectory: $(Pipeline.Workspace)/Odmflix-API
+              remoteDirectory: /odm-dev/api/
+              serverUrl: $(FtpServerUrl)
+              cleanContents: true
+              preservePaths: true
+            env:
+              FtpPassword: $(FtpPassword)
+              DatabasePassword: $(DatabasePassword)
+  - stage: DeployProd
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    variables:
+      - group: Plesk_FTP
+      - group: OdmflixApi
+    jobs:
+      - job: Deploy
+        displayName: Deploy Prod
+        steps:
+          - checkout: self
+            clean: true
+            path: Odmflix-API
+            displayName: Checkout Source
+          - task: CmdLine@2
+            inputs:
+              script: |
+                composer install --no-dev
+            displayName: Composer Install
+          - task: CmdLine@2
+            inputs:
+              script: |
+                rm -rf $(Pipeline.Workspace)/**/.git*
+                rm -rf $(Pipeline.Workspace)/**/*.yml
+                rm -rf $(Pipeline.Workspace)/**/*.xml
+                rm -rf $(Pipeline.Workspace)/**/tests
+            displayName: Remove Unwanted Files
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sed -i "/^\[database\]$/,/^\[/ s/^host=''/host='$(DatabaseHost)'/" $(Pipeline.Workspace)/Skylab-Design-API/settings.ini
+                sed -i "/^\[database\]$/,/^\[/ s/^database=''/database='$(DatabaseName)'/" $(Pipeline.Workspace)/Skylab-Design-API/settings.ini
+                sed -i "/^\[database\]$/,/^\[/ s/^username=''/username='$(DatabaseUser)'/" $(Pipeline.Workspace)/Skylab-Design-API/settings.ini
+                sed -i "/^\[database\]$/,/^\[/ s/^password=''/password='$(DatabasePassword)'/" $(Pipeline.Workspace)/Skylab-Design-API/settings.ini
+            displayName: Update Database User
+          - task: FtpUpload@2
+            displayName: Upload To Plesk
+            inputs:
+              credentialsOption: inputs
+              username: $(FtpUser)
+              password: $(FtpPassword)
+              rootDirectory: $(Pipeline.Workspace)/Odmflix-API
+              remoteDirectory: /odm/api/
+              serverUrl: $(FtpServerUrl)
+              cleanContents: true
+              preservePaths: true
+            env:
+              FtpPassword: $(FtpPassword)
+              DatabasePassword: $(DatabasePassword)
