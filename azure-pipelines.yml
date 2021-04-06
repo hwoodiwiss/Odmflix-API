@@ -105,10 +105,10 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                sed -i "/^\[database\]$/,/^\[/ s/^host=''/host='$(DatabaseHost)'/" $(Pipeline.Workspace)/Skylab-Design-API/settings.ini
-                sed -i "/^\[database\]$/,/^\[/ s/^database=''/database='$(DatabaseName)'/" $(Pipeline.Workspace)/Skylab-Design-API/settings.ini
-                sed -i "/^\[database\]$/,/^\[/ s/^username=''/username='$(DatabaseUser)'/" $(Pipeline.Workspace)/Skylab-Design-API/settings.ini
-                sed -i "/^\[database\]$/,/^\[/ s/^password=''/password='$(DatabasePassword)'/" $(Pipeline.Workspace)/Skylab-Design-API/settings.ini
+                sed -i "/^\[database\]$/,/^\[/ s/^host=''/host='$(DatabaseHost)'/" $(Pipeline.Workspace)/Odmflix-API/settings.ini
+                sed -i "/^\[database\]$/,/^\[/ s/^database=''/database='$(DatabaseName)'/" $(Pipeline.Workspace)/Odmflix-API/settings.ini
+                sed -i "/^\[database\]$/,/^\[/ s/^username=''/username='$(DatabaseUser)'/" $(Pipeline.Workspace)/Odmflix-API/settings.ini
+                sed -i "/^\[database\]$/,/^\[/ s/^password=''/password='$(DatabasePassword)'/" $(Pipeline.Workspace)/Odmflix-API/settings.ini
             displayName: Update Database User
           - task: FtpUpload@2
             displayName: Upload To Plesk
