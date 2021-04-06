@@ -11,6 +11,7 @@ class ShowModel
 	public ?string $DateAdded;
 	public string $ReleaseYear;
 	public ?string $Rating;
-	public string $Duration;
+	public ?int $Duration;
+	public ?int $NumSeasons;
 	public string $Description;
 }
