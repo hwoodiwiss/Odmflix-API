@@ -36,4 +36,14 @@ class ShowRepository
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
+	public function GetShows(): ?array
+	{
+		$stmt = $this->db->prepare('SELECT * FROM vw_Shows');
+		if (!$stmt->execute()) {
+			throw new \Error("An error occured retrieving data from the database. Error info: " . $stmt->errorInfo()[2]);
+		}
+
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+
 }
