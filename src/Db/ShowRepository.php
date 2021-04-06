@@ -17,12 +17,23 @@ class ShowRepository
 			throw new \Error("An error occured retrieving data from the database. Error info: " . $stmt->errorInfo()[2]);
 		}
 
-		$data = $stmt->fetchAll();
+		$data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 		if(count($data) !== 1) {
 			return null;
 		}
 		
 		return $this->modelMapper->map($data[0]);
+	}
+
+	public function GetShowsByType(int $typeId): ?array
+	{
+		$stmt = $this->db->prepare('SELECT * FROM vw_Shows WHERE ShowTypeId = :c0');
+		$stmt->bindValue(':c0', $typeId, \PDO::PARAM_INT);
+		if (!$stmt->execute()) {
+			throw new \Error("An error occured retrieving data from the database. Error info: " . $stmt->errorInfo()[2]);
+		}
+
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
 }
