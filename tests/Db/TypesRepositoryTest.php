@@ -25,13 +25,11 @@ class TypesRepositoryTest extends TestCase
 		$this->mockDb->method('prepare')->willReturn($mockStmt);
 		$mockStmt->method('execute')->willReturn(true);
 		$mockStmt->expects($this->once())->method('fetchAll')->willReturn([
-			["ShowType" => "Movie", "AverageDuration" => 1234, "AverageNumSeasons" => NULL],
-			["ShowType" => "TV Show", "AverageDuration" => NULL, "AverageNumSeasons" => 1234],
+			["AverageDuration" => 1234],
 		]);
 
 		$result = $this->repository->GetAverageMovieDuration();
 
-		$this->assertContains("Movie", $result);
 		$this->assertContains(1234, $result);
 	}
 }
