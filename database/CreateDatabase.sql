@@ -40,12 +40,24 @@ CREATE TABLE IF NOT EXISTS `Shows` (
 	`DateAdded` DATE NULL,
 	`ReleaseYearId` INT NOT NULL,
 	`RatingId` INT NULL,
-	`Duration` INT NULL,
-	`NumSeasons` INT NULL,
 	`Description` VARCHAR(250) NOT NULL,
 	FOREIGN KEY (`ShowTypeId`) REFERENCES `ShowTypes`(`Id`),
 	FOREIGN KEY (`ReleaseYearId`) REFERENCES `ReleaseYears`(`Id`),
 	FOREIGN KEY (`RatingId`) REFERENCES `Ratings`(`Id`)
+);
+
+CREATE TABLE IF NOT EXISTS `MovieDurations` (
+	`Id` INT PRIMARY KEY NOT NULL,
+	`ShowId` INT NOT NULL,
+	`DurationMins` INT NOT NULL,
+	FOREIGN KEY (`ShowId`) REFERENCES `Shows`(`Id`)
+);
+
+CREATE TABLE IF NOT EXISTS `TvShowDurations` (
+	`Id` INT PRIMARY KEY NOT NULL,
+	`ShowId` INT NOT NULL,
+	`DurationSeasons` INT NOT NULL,
+	FOREIGN KEY (`ShowId`) REFERENCES `Shows`(`Id`)
 );
 
 CREATE TABLE IF NOT EXISTS `ShowDirectors` (
