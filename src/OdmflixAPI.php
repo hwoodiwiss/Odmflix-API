@@ -29,7 +29,7 @@ class OdmflixApi
 
 	public function main()
 	{
-		$this->route = $_SERVER['REQUEST_URI'];
+		$this->route = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 		$this->method = $_SERVER['REQUEST_METHOD'];
 		$localSettingsFile = __DIR__ . '/../settings.secrets.ini';
 		$settingsFile = __DIR__ . '/../settings.ini';
@@ -77,6 +77,7 @@ class OdmflixApi
 		Session::StartSession();
 		$this->router
 		->Add((new Route('Home', 'Echo', ['GET'])))
+		->Add((new Route('Netflix', 'Show', ['GET'])))
 		->Add((new Route('Options', 'HandleOptions', ['OPTIONS'])));
 
 		$this->controllerCtx = (new ControllerContextBuilder)
@@ -92,6 +93,7 @@ class OdmflixApi
 		$this->diContainer->addInjectable(ControllerContext::class , $this->controllerCtx);
 		$this->diContainer->addInjectable(Session::class);
 		$this->diContainer->addInjectable(Db::class);
+		$this->diContainer->addInjectable(ShowRepository::class);
 
 
 	}
