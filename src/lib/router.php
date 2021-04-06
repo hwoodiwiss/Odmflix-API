@@ -156,7 +156,7 @@ class Route
 
       $action = $this->actionName;
       $actionMethod = $this->controllerClass->getMethod($action);
-      $actionArgs = $this->getArgValuesForAction($actionMethod, $ctx);
+      $actionArgs = $this->getArgValuesForAction($actionMethod, $method, $ctx);
       if($actionArgs  === null) {
         return new BadRequestResult();
       }
@@ -167,15 +167,14 @@ class Route
     }
   }
 
-  private function getArgValuesForAction(\ReflectionMethod $method, ControllerContext $ctx): array | null
+  private function getArgValuesForAction(\ReflectionMethod $actionMethod, string $requestMethod, ControllerContext $ctx): array | null
   {
-    $actionParams = $method->getParameters();
+    $actionParams = $actionMethod->getParameters();
     $actionArgs = [];
     foreach($actionParams as $param) 
     {
       /** @var \ReflectionNamedType */$paramType = $param->getType();
-      $paramMapper = new Mapper($paramType->getName());
-      if($method === 'GET') {
+      if($requestMethod === 'GET') {
         if(isset($ctx->QueryParams[$param->getName()])) {
           $actionArgs[] = $ctx->QueryParams[$param->getName()];
         } else if ($paramType->allowsNull()) {
@@ -184,6 +183,7 @@ class Route
           return null;
         }
       } else {
+        $paramMapper = new Mapper($paramType->getName());
         $paramVal = $paramMapper->map(json_decode($ctx->RequestBody));
         if(!$paramMapper->getValidator()->validate($paramVal)) {
           return null;
