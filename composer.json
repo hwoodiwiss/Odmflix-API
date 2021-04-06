@@ -7,7 +7,7 @@
   },
   "autoload": {
     "psr-4": {
-      "OdmflixApi\\": "src"
+      "OdmflixApi\\": "src/"
     }
   },
   "require-dev": {
