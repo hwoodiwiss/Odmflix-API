@@ -9,6 +9,7 @@ SELECT
 	`ReleaseYears`.`Year` AS `ReleaseYear`,
 	`Ratings`.`Name` AS `Rating`,
 	`Shows`.`Duration` AS `Duration`,
+	`Shows`.`NumSeasons` AS `NumSeasons`,
 	`Shows`.`Description` AS `Description`
 FROM `Shows`
 JOIN `ShowTypes` ON `Shows`.`ShowTypeId` = `ShowTypes`.`Id`
