@@ -1,6 +1,6 @@
 <?php
 
-namespace SkylabDesignApi;
+namespace OdmflixApi;
 
 require_once __DIR__ . '/../lib/includes.php';
 

@@ -128,7 +128,7 @@ class Route
 
   private function GetControllerClass(string $controllerName): \ReflectionClass
   {
-    return new \ReflectionClass("SkylabDesignApi\\" . $controllerName . 'Controller');
+    return new \ReflectionClass("OdmflixApi\\" . $controllerName . 'Controller');
   }
 
   private function ValidateAction()
