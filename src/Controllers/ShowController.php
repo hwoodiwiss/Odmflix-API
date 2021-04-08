@@ -19,4 +19,13 @@ class ShowController extends ControllerBase
 
 		return $this->NotFound();
 	}
+
+	public function ByTypeName(string $typeName): IResult
+	{
+		if($shows = $this->showRepo->GetShowsByTypeName($typeName)) {
+			return $this->Ok($shows);
+		}
+
+		return $this->NotFound();
+	}
 }
