@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../../src/Db/TypesRepository.php';
+require_once __DIR__ . '/../../src/Providers/TypesRepository.php';
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;

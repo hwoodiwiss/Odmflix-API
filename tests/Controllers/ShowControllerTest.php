@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../../src/Db/ShowRepository.php';
+require_once __DIR__ . '/../../src/Providers/ShowRepository.php';
 require_once __DIR__ . '/../../src/Controllers/ShowController.php';
 
 use PHPUnit\Framework\TestCase;
