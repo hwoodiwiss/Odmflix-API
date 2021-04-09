@@ -76,9 +76,9 @@ class OdmflixApi
 	private function Startup() {
 		Session::StartSession();
 		$this->router
-		->Add((new Route('Home', 'Echo', ['GET'])))
-		->Add((new Route('Show', 'ById', ['GET'])))
-		->Add((new Route('Options', 'HandleOptions', ['OPTIONS'])));
+		->AddController(HomeController::class)
+		->AddController(ShowController::class)
+		->AddController(OptionsController::class);
 
 		$this->controllerCtx = (new ControllerContextBuilder)
 			->AddRequestHeaders(getallheaders())

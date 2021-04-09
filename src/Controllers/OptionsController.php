@@ -6,6 +6,7 @@ require_once __DIR__ . '/../lib/includes.php';
 
 class OptionsController extends ControllerBase
 {
+	#[HttpMethods(['OPTIONS'])]
 	public function HandleOptions(): IResult
 	{
 		$requestedHeaders = $this->ctx->requestHeaders['Access-Control-Request-Headers'] ?? [];

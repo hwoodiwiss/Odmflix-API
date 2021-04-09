@@ -19,6 +19,19 @@ class Router
     return $this;
   }
 
+  public function AddController(string $controllerName): Router {
+    $reflectedController = new \ReflectionClass($controllerName);
+    foreach($reflectedController->getMethods() as /** @var \ReflectionMethod */ $methodInfo) {
+      $attributes = $methodInfo->getAttributes();
+      foreach($attributes as /** @var \ReflectionAttribute */$attribute) {
+        if($attribute->getName() === HttpMethods::class) {
+          $this->Add((new Route($controllerName, $methodInfo->getShortName(), $attribute->getArguments()[0])));
+        }
+      }
+    }
+    return $this;
+  }
+
   public function Get(string $route): Route|null
   {
     return $this->routes->Get($route);
@@ -118,17 +131,13 @@ class Route
   private \ReflectionClass $controllerClass;
   private array $SupportedMethods;
 
-  public function __construct(private string $controllerName, private string $actionName, array $supportedMethods, )
+  public function __construct(private string $controllerName, private string $actionName, array $supportedMethods)
   {
-    $this->route =  ($controllerName != "Home" ? "/$controllerName" : "") . "/$actionName";
+    $this->controllerClass = new \ReflectionClass($this->controllerName);
+    $controllerRouteName = str_replace("Controller", "", $this->controllerClass->getShortName());
+    $this->route =  ($controllerRouteName != "Home" ? "/$controllerRouteName" : "") . "/$actionName";
     $this->SupportedMethods = $supportedMethods;
-    $this->controllerClass = $this->GetControllerClass($this->controllerName);
     $this->ValidateAction();
-  }
-
-  private function GetControllerClass(string $controllerName): \ReflectionClass
-  {
-    return new \ReflectionClass("OdmflixApi\\" . $controllerName . 'Controller');
   }
 
   private function ValidateAction()
@@ -173,7 +182,6 @@ class Route
     $actionArgs = [];
     foreach($actionParams as $param) 
     {
-      /** @var \ReflectionNamedType */$paramType = $param->getType();
       if($requestMethod === 'GET') {
         if(isset($ctx->QueryParams[$param->getName()])) {
           $actionArgs[] = $ctx->QueryParams[$param->getName()];
@@ -183,6 +191,7 @@ class Route
           return null;
         }
       } else {
+        /** @var \ReflectionNamedType */$paramType = $param->getType();
         $paramMapper = new Mapper($paramType->getName());
         $paramVal = $paramMapper->map(json_decode($ctx->RequestBody));
         if(!$paramMapper->getValidator()->validate($paramVal)) {

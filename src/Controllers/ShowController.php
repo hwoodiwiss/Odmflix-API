@@ -11,6 +11,7 @@ class ShowController extends ControllerBase
 		parent::__construct($ctx);
 	}
 
+	#[HttpMethods(['GET'])]
 	public function ById(int $id): IResult
 	{
 		if($show = $this->showRepo->GetShowById($id)) {
@@ -20,6 +21,7 @@ class ShowController extends ControllerBase
 		return $this->NotFound();
 	}
 
+	#[HttpMethods(['GET'])]
 	public function ByTypeName(string $typeName): IResult
 	{
 		if($shows = $this->showRepo->GetShowsByTypeName($typeName)) {
