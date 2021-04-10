@@ -22,12 +22,24 @@ class ShowController extends ControllerBase
 	}
 
 	#[HttpMethods(['GET'])]
-	public function ByTypeName(string $typeName): IResult
+	public function ByType(int $id): IResult
 	{
-		if($shows = $this->showRepo->GetShowsByTypeName($typeName)) {
+		if($shows = $this->showRepo->GetShowsByType($id)) {
 			return $this->Ok($shows);
 		}
 
 		return $this->NotFound();
 	}
+
+	#[HttpMethods(['GET'])]
+	public function ByCountry(int $id): IResult
+	{
+		if($shows = $this->showRepo->GetShowsByCountry($id)) {
+			return $this->Ok($shows);
+		}
+
+		return $this->NotFound();
+	}
+
+	
 }
