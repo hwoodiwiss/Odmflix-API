@@ -65,7 +65,7 @@ class TypeRepository
 			throw new \Error("An error occured retrieving data from the database. Error info: " . $stmt->errorInfo()[2]);
 		}
 
-		$data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+		$data = $stmt->fetchAll(\PDO::FETCH_CLASS, TypeCount::class);
 		return $data;
 	}
 
@@ -79,7 +79,7 @@ class TypeRepository
 			throw new \Error("An error occured retrieving data from the database. Error info: " . $stmt->errorInfo()[2]);
 		}
 
-		$data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+		$data = $stmt->fetchAll(\PDO::FETCH_CLASS, TypeCount::class);
 		return $data[0];	
 	}
 }
