@@ -78,6 +78,7 @@ class OdmflixApi
 		$this->router
 		->AddController(HomeController::class)
 		->AddController(ShowController::class)
+		->AddController(TypeController::class)
 		->AddController(OptionsController::class);
 
 		$this->controllerCtx = (new ControllerContextBuilder)
@@ -94,6 +95,7 @@ class OdmflixApi
 		$this->diContainer->addInjectable(Session::class);
 		$this->diContainer->addInjectable(Db::class);
 		$this->diContainer->addInjectable(ShowRepository::class);
+		$this->diContainer->addInjectable(TypeRepository::class);
 
 
 	}
