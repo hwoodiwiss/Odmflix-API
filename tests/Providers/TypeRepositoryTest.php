@@ -5,18 +5,18 @@ require_once __DIR__ . '/../../src/Providers/TypesRepository.php';
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use OdmflixApi\Db;
-use OdmflixApi\TypesRepository;
+use OdmflixApi\TypeRepository;
 
-class TypesRepositoryTest extends TestCase
+class TypeRepositoryTest extends TestCase
 {
-	private TypesRepository $repository;
+	private TypeRepository $repository;
 	private MockObject $mockDb;
 
 	protected function setUp(): void
 	{
 
 		$this->mockDb = $this->createMock(Db::class);
-		$this->repository = new TypesRepository($this->mockDb);
+		$this->repository = new TypeRepository($this->mockDb);
 	}
 
 	public function testTypesRepository_GetAverageMovieDurationShouldReturnAValidSubset()
