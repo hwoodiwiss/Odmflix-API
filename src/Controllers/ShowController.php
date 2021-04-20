@@ -41,5 +41,14 @@ class ShowController extends ControllerBase
 		return $this->NotFound();
 	}
 
+	#[HttpMethods(['GET'])]
+	public function All(): IResult
+	{
+		if($shows = $this->showRepo->GetShows()) {
+			return $this->Ok($shows);
+		}
+
+		return $this->NoData();
+	}
 	
 }
