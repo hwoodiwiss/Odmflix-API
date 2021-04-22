@@ -70,7 +70,7 @@ class ShowRepository
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
-	public function GetShowsByCountryByYear(int $typeId): ?array
+	public function GetShowCountByCountryByYear(int $typeId): ?array
 	{
 		$stmt = $this->db->prepare('SELECT DISTINCT `Year`, `c`.`Name` AS Country, COUNT(s.id) AS `Count` FROM `ReleaseYears` AS `r` 
 									JOIN `Shows` AS `s` ON `r`.`Id` = `s`.`ReleaseYearId`
