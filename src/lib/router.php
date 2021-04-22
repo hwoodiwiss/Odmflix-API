@@ -182,6 +182,8 @@ class Route
     $actionArgs = [];
     foreach($actionParams as $param) 
     {
+      /** @var \ReflectionNamedType */$paramType = $param->getType();
+
       if($requestMethod === 'GET') {
         if(isset($ctx->QueryParams[$param->getName()])) {
           $actionArgs[] = $ctx->QueryParams[$param->getName()];
@@ -191,7 +193,6 @@ class Route
           return null;
         }
       } else {
-        /** @var \ReflectionNamedType */$paramType = $param->getType();
         $paramMapper = new Mapper($paramType->getName());
         $paramVal = $paramMapper->map(json_decode($ctx->RequestBody));
         if(!$paramMapper->getValidator()->validate($paramVal)) {
