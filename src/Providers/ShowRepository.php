@@ -70,6 +70,33 @@ class ShowRepository
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
+	public function GetShowsByCountryByYear(int $typeId): ?array
+	{
+		$stmt = $this->db->prepare('SELECT DISTINCT `Year`, `c`.`Name` AS Country, COUNT(s.id) AS `Count` FROM `ReleaseYears` AS `r` 
+									JOIN `Shows` AS `s` ON `r`.`Id` = `s`.`ReleaseYearId`
+									JOIN `ShowCountries` AS `sc` ON `sc`.`ShowId` = `s`.`Id`
+									JOIN `Countries` AS `c` ON `sc`.`CountryId` = `c`.`Id`
+									WHERE `s`.`ShowTypeId` = :c0
+									GROUP BY `Year`, `Country`
+									ORDER BY `Year`');
+		$stmt->bindValue(':c0', $typeId, \PDO::PARAM_INT);
+		if (!$stmt->execute()) {
+			throw new \Error("An error occured retrieving data from the database. Error info: " . $stmt->errorInfo()[2]);
+		}
+
+		$rawData = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+		$groupedData = [];
+		foreach($rawData as $row) {
+			if(!isset($groupedData[$row['Year']])) {
+				$groupedData[$row['Year']] = [];
+			}
+
+			$groupedData[$row['Year']][] = ["Country" => $row['Country'], "Count" => $row['Count'] ];
+		}
+
+		return $groupedData;
+	}
+
 	public function GetTvShowsByYear(int $year): ?array
 	{
 		$stmt = $this->db->prepare('SELECT * FROM vw_TvShows WHERE ReleaseYear = :c0');

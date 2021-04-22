@@ -40,6 +40,15 @@ class ShowController extends ControllerBase
 
 		return $this->NotFound();
 	}
+	#[HttpMethods(['GET'])]
+	public function ByCountryByYear(int $typeId): IResult
+	{
+		if($data = $this->showRepo->GetShowsByCountryByYear($typeId)) {
+			return $this->Ok($data);
+		}
+
+		return $this->NotFound();
+	}
 
 	#[HttpMethods(['GET'])]
 	public function All(): IResult
