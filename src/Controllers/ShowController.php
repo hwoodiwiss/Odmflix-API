@@ -41,7 +41,7 @@ class ShowController extends ControllerBase
 		return $this->NotFound();
 	}
 	#[HttpMethods(['GET'])]
-	public function ByCountryByYearCount(int $typeId): IResult
+	public function ByCountryByYearCount(?int $typeId): IResult
 	{
 		if($data = $this->showRepo->GetShowCountByCountryByYear($typeId)) {
 			return $this->Ok($data);

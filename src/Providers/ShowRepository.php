@@ -70,16 +70,18 @@ class ShowRepository
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
-	public function GetShowCountByCountryByYear(int $typeId): ?array
+	public function GetShowCountByCountryByYear(?int $typeId): ?array
 	{
 		$stmt = $this->db->prepare('SELECT DISTINCT `Year`, `c`.`Name` AS Country, COUNT(s.id) AS `Count` FROM `ReleaseYears` AS `r` 
 									JOIN `Shows` AS `s` ON `r`.`Id` = `s`.`ReleaseYearId`
 									JOIN `ShowCountries` AS `sc` ON `sc`.`ShowId` = `s`.`Id`
-									JOIN `Countries` AS `c` ON `sc`.`CountryId` = `c`.`Id`
-									WHERE `s`.`ShowTypeId` = :c0
-									GROUP BY `Year`, `Country`
+									JOIN `Countries` AS `c` ON `sc`.`CountryId` = `c`.`Id`' .
+									$typeId !== null ? '`WHERE `s`.`ShowTypeId` = :c0`' : '' .
+									'GROUP BY `Year`, `Country`
 									ORDER BY `Year`');
-		$stmt->bindValue(':c0', $typeId, \PDO::PARAM_INT);
+		if($typeId !== null) {
+			$stmt->bindValue(':c0', $typeId, \PDO::PARAM_INT);
+		}
 		if (!$stmt->execute()) {
 			throw new \Error("An error occured retrieving data from the database. Error info: " . $stmt->errorInfo()[2]);
 		}
