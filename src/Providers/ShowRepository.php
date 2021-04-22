@@ -75,9 +75,9 @@ class ShowRepository
 		$stmt = $this->db->prepare('SELECT DISTINCT `Year`, `c`.`Name` AS Country, COUNT(s.id) AS `Count` FROM `ReleaseYears` AS `r` 
 									JOIN `Shows` AS `s` ON `r`.`Id` = `s`.`ReleaseYearId`
 									JOIN `ShowCountries` AS `sc` ON `sc`.`ShowId` = `s`.`Id`
-									JOIN `Countries` AS `c` ON `sc`.`CountryId` = `c`.`Id`' .
-									$typeId !== null ? '`WHERE `s`.`ShowTypeId` = :c0`' : '' .
-									'GROUP BY `Year`, `Country`
+									JOIN `Countries` AS `c` ON `sc`.`CountryId` = `c`.`Id` ' .
+									($typeId !== null ? 'WHERE `s`.`ShowTypeId` = :c0' : '') .
+									' GROUP BY `Year`, `Country`
 									ORDER BY `Year`');
 		if($typeId !== null) {
 			$stmt->bindValue(':c0', $typeId, \PDO::PARAM_INT);
