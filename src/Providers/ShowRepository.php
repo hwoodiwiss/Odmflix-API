@@ -23,6 +23,25 @@ class ShowRepository
 		return $data[0];
 	}
 
+	public function GetShowsByIds(array $ids): ?array
+	{
+		$paramList = array_map(function($idx) {
+			return ":c$idx";
+		}, array_keys($ids));
+
+		$stmt = $this->db->prepare('SELECT * FROM vw_Shows WHERE Id IN (' . implode(',', $paramList) . ')');
+		foreach($paramList as $idx => $param) {
+			$stmt->bindValue($param, $ids[$idx], \PDO::PARAM_INT);
+		}
+		if (!$stmt->execute()) {
+			throw new \Error("An error occured retrieving data from the database. Error info: " . $stmt->errorInfo()[2]);
+		}
+
+		$data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+		
+		return $data;
+	}
+
 	public function GetShowsByType(int $typeId): ?array
 	{
 		$stmt = $this->db->prepare('SELECT * FROM vw_Shows WHERE ShowTypeId = :c0');
@@ -72,6 +91,7 @@ class ShowRepository
 
 	public function GetShowCountByCountryByYear(?int $typeId): ?array
 	{
+		$this->setGroupConcatMaxLength(65535);
 		$stmt = $this->db->prepare('SELECT DISTINCT `Year`, `c`.`Name` AS Country, COUNT(`s`.`Id`) AS `Count`, GROUP_CONCAT(`s`.`Id`) AS `ShowIds` FROM `ReleaseYears` AS `r` 
 									JOIN `Shows` AS `s` ON `r`.`Id` = `s`.`ReleaseYearId`
 									JOIN `ShowCountries` AS `sc` ON `sc`.`ShowId` = `s`.`Id`
@@ -131,6 +151,11 @@ class ShowRepository
 		}
 
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+
+	private function setGroupConcatMaxLength(int $length) 
+	{
+		$this->db->query("SET SESSION group_concat_max_len = $length;");
 	}
 
 }
