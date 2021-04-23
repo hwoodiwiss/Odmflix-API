@@ -21,6 +21,16 @@ class ShowController extends ControllerBase
 		return $this->NotFound();
 	}
 
+	#[HttpMethods(['POST'])]
+	public function ByIds(array $ids): IResult
+	{
+		if($shows = $this->showRepo->GetShowsByIds($ids)) {
+			return $this->Ok($shows);
+		}
+
+		return $this->NotFound();
+	}
+
 	#[HttpMethods(['GET'])]
 	public function ByType(int $id): IResult
 	{
