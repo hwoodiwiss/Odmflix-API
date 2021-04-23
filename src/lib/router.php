@@ -193,11 +193,17 @@ class Route
           return null;
         }
       } else {
-        $paramMapper = new Mapper($paramType->getName());
-        $paramVal = $paramMapper->map(json_decode($ctx->RequestBody));
-        if(!$paramMapper->getValidator()->validate($paramVal)) {
-          return null;
+        $paramVal;
+        if($paramType->getName() === 'array') {
+          $paramVal = json_decode($ctx->RequestBody);
+        } else {
+          $paramMapper = new Mapper($paramType->getName());
+          $paramVal = $paramMapper->map(json_decode($ctx->RequestBody));
+          if (!$paramMapper->getValidator()->validate($paramVal)) {
+            return null;
+          }
         }
+
         $actionArgs[] = $paramVal;
       }
     }
