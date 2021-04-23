@@ -72,7 +72,7 @@ class ShowRepository
 
 	public function GetShowCountByCountryByYear(?int $typeId): ?array
 	{
-		$stmt = $this->db->prepare('SELECT DISTINCT `Year`, `c`.`Name` AS Country, COUNT(s.id) AS `Count` FROM `ReleaseYears` AS `r` 
+		$stmt = $this->db->prepare('SELECT DISTINCT `Year`, `c`.`Name` AS Country, COUNT(`s`.`Id`) AS `Count`, GROUP_CONCAT(`s`.`Id`) AS `ShowIds` FROM `ReleaseYears` AS `r` 
 									JOIN `Shows` AS `s` ON `r`.`Id` = `s`.`ReleaseYearId`
 									JOIN `ShowCountries` AS `sc` ON `sc`.`ShowId` = `s`.`Id`
 									JOIN `Countries` AS `c` ON `sc`.`CountryId` = `c`.`Id` ' .
@@ -93,7 +93,9 @@ class ShowRepository
 				$groupedData[$row['Year']] = [];
 			}
 
-			$groupedData[$row['Year']][] = ["Country" => $row['Country'], "Count" => $row['Count'] ];
+			$groupedData[$row['Year']][] = ["Country" => $row['Country'], "Count" => $row['Count'], "ShowIds" => array_map(function (int $val) {
+				return $val; //Type coercing through the param type
+			},explode(',', $row['ShowIds'])) ];
 		}
 
 		return $groupedData;
