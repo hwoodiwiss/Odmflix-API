@@ -23,8 +23,11 @@ class ShowRepository
 		return $data[0];
 	}
 
-	public function GetShowsByIds(array $ids): ?array
+	public function GetShowsByIds(?array $ids): ?array
 	{
+		if($ids === null) {
+			return null;
+		}
 		$paramList = array_map(function($idx) {
 			return ":c$idx";
 		}, array_keys($ids));
@@ -75,18 +78,50 @@ class ShowRepository
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
-	public function GetShowsByCountry(int $showId): ?array
+	public function GetShowsByCountry(int $countryId): ?array
 	{
 		$stmt = $this->db->prepare('SELECT * FROM `Countries` `c` 
 								JOIN `ShowCountries` `sc` ON `c`.`Id` = `sc`.`CountryId`
 								LEFT JOIN `vw_Shows` `s` ON `sc`.`ShowId` = `s`.`Id`
 								WHERE `c`.`Id` = :c0');
-		$stmt->bindValue(':c0', $showId, \PDO::PARAM_INT);
+		$stmt->bindValue(':c0', $countryId, \PDO::PARAM_INT);
 		if (!$stmt->execute()) {
 			throw new \Error("An error occured retrieving data from the database. Error info: " . $stmt->errorInfo()[2]);
 		}
 
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+
+	public function GetShowCountByCountry(?int $typeId): ?array
+	{
+		$this->setGroupConcatMaxLength(65535);
+		$stmt = $this->db->prepare('SELECT DISTINCT `Year`, `c`.`Name` AS Country, COUNT(`s`.`Id`) AS `Count`, GROUP_CONCAT(`s`.`Id`) AS `ShowIds` FROM `ReleaseYears` AS `r` 
+									JOIN `Shows` AS `s` ON `r`.`Id` = `s`.`ReleaseYearId`
+									JOIN `ShowCountries` AS `sc` ON `sc`.`ShowId` = `s`.`Id`
+									JOIN `Countries` AS `c` ON `sc`.`CountryId` = `c`.`Id` ' .
+			($typeId !== null ? 'WHERE `s`.`ShowTypeId` = :c0' : '') .
+			' GROUP BY `Year`, `Country`
+									ORDER BY `Year`');
+		if ($typeId !== null) {
+			$stmt->bindValue(':c0', $typeId, \PDO::PARAM_INT);
+		}
+		if (!$stmt->execute()) {
+			throw new \Error("An error occured retrieving data from the database. Error info: " . $stmt->errorInfo()[2]);
+		}
+
+		$rawData = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+		$groupedData = [];
+		foreach ($rawData as $row) {
+			if (!isset($groupedData[$row['Year']])) {
+				$groupedData[$row['Year']] = [];
+			}
+
+			$groupedData[$row['Year']][] = ["Country" => $row['Country'], "Count" => $row['Count'], "ShowIds" => array_map(function (int $val) {
+				return $val; //Type coercing through the param type
+			}, explode(',', $row['ShowIds']))];
+		}
+
+		return $groupedData;
 	}
 
 	public function GetShowCountByCountryByYear(?int $typeId): ?array

@@ -22,7 +22,7 @@ class ShowController extends ControllerBase
 	}
 
 	#[HttpMethods(['POST'])]
-	public function ByIds(array $ids): IResult
+	public function ByIds(?array $ids): IResult
 	{
 		if($shows = $this->showRepo->GetShowsByIds($ids)) {
 			return $this->Ok($shows);
