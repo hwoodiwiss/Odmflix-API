@@ -11,6 +11,16 @@ class ActorController extends ControllerBase
 		parent::__construct($ctx);
 	}
 
+	#[HttpMethods(['GET'])]
+	public function GetTopActors(int $count)
+	{
+		if($actorCounts = $this->repo->GetTopNActors($count)) {
+			return $this->Ok($actorCounts);
+		}
+
+		return $this->NoData();
+	}
+
 	#[HttpMethods(['POST'])]
 	public function GetActorsForShowsWithLimit(IdListWithLimit $model)
 	{

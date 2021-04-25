@@ -18,6 +18,25 @@ class ActorsRepository
 		return $data;
 	}
 
+	public function GetTopNActors(int $n)
+	{
+
+		$stmt = $this->db->prepare("SELECT `a`.`Name` AS `Actor`, COUNT(`sa`.`Id`) AS `Count` FROM `Actors` `a`
+									JOIN `ShowActors` `sa` ON `sa`.`ActorId` = `a`.`Id`
+									GROUP BY `Actor`
+									ORDER BY `Count` DESC
+									LIMIT :n0");
+		$stmt->bindValue(':n0', $n, \PDO::PARAM_INT);
+
+		if (!$stmt->execute()) {
+			throw new \Error("An error occured retrieving data from the database. Error info: " . $stmt->errorInfo()[2]);
+		}
+
+		$data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+		return $data;
+	}
+
 	public function GetTopNActorsForShows(int $n, array $showIds)
 	{
 

@@ -25,7 +25,7 @@ class RatingsRepository
 
 	public function GetRatingCounts()
 	{
-		$stmt = $this->db->prepare('SELECT `Name` AS `RatingName`, COUNT(`Shows`.`Id`) AS `NumRatings` FROM `Ratings` 
+		$stmt = $this->db->prepare('SELECT `Name` AS `Rating`, COUNT(`Shows`.`Id`) AS `Count` FROM `Ratings` 
 									LEFT JOIN `Shows` ON `Ratings`.`Id` = `Shows`.`RatingId` 
 									GROUP BY `Ratings`.`Name`;');
 
