@@ -14,8 +14,48 @@ class RatingController extends ControllerBase
 	#[HttpMethods(['GET'])]
 	public function Counts()
 	{
-		if($actorCounts = $this->repo->GetRatingCounts()) {
-			return $this->Ok($actorCounts);
+		if($ratingCounts = $this->repo->GetRatingCounts()) {
+			return $this->Ok($ratingCounts);
+		}
+
+		return $this->NoData();
+	}
+
+	#[HttpMethods(['GET'])]
+	public function CountsByYear()
+	{
+		if($ratingCounts = $this->repo->GetRatingsByYear()) {
+			return $this->Ok($ratingCounts);
+		}
+
+		return $this->NoData();
+	}
+
+	#[HttpMethods(['GET'])]
+	public function TotalsByYear()
+	{
+		if($ratingTotals = $this->repo->GetRatingsTotalsByYear()) {
+			return $this->Ok($ratingTotals);
+		}
+
+		return $this->NoData();
+	}
+
+	#[HttpMethods(['POST'])]
+	public function CountsByYearForShows(array $showIds)
+	{
+		if($ratingCounts = $this->repo->GetRatingsByYearForShows($showIds)) {
+			return $this->Ok($ratingCounts);
+		}
+
+		return $this->NoData();
+	}
+
+	#[HttpMethods(['POST'])]
+	public function TotalsByYearForShows(array $showIds)
+	{
+		if($ratingTotals = $this->repo->GetRatingsTotalsByYearForShows($showIds)) {
+			return $this->Ok($ratingTotals);
 		}
 
 		return $this->NoData();
