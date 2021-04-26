@@ -69,7 +69,10 @@ class OdmflixApi
 
 		http_response_code($result->StatusCode());
 		if(($content = $result->Body()) !== null) {
-			echo $content;
+			$responseZip = gzencode($content);
+			header('Content-Encoding: gzip');
+			header('Content-Length: ' . strlen($responseZip));
+			echo $responseZip;
 		}
 	}
 
