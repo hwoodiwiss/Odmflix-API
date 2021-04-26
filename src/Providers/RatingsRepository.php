@@ -73,6 +73,27 @@ class RatingsRepository
 		return $data;
 	}
 
+	public function GetRatingCountsForShows(?array $showIds)
+	{
+		$paramList = array_map(function ($idx) {
+			return ":c$idx";
+		}, array_keys($showIds));
+		$paramListStr = implode(',', $paramList);
+		$stmt = $this->db->prepare("SELECT `Name` AS `Rating`, COUNT(`s`.`Id`) AS `Count` FROM `Ratings` 
+									LEFT JOIN `Shows` AS `s` ON `Ratings`.`Id` = `s`.`RatingId` 
+									WHERE `s`.`Id` IN ($paramListStr)
+									GROUP BY `Ratings`.`Name`;");
+
+		foreach ($paramList as $idx => $param) {
+			$stmt->bindValue($param, $showIds[$idx], \PDO::PARAM_INT);
+		}
+		if (!$stmt->execute()) {
+			throw new \Error("An error occured retrieving data from the database. Error info: " . $stmt->errorInfo()[2]);
+		}
+
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+
 	public function GetRatingsByYearForShows(?array $showIds)
 	{
 		$paramList = array_map(function ($idx) {

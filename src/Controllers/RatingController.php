@@ -41,6 +41,16 @@ class RatingController extends ControllerBase
 		return $this->NoData();
 	}
 
+		#[HttpMethods(['POST'])]
+	public function CountsForShows(array $showIds)
+	{
+		if($ratingCounts = $this->repo->GetRatingCountsForShows($showIds)) {
+			return $this->Ok($ratingCounts);
+		}
+
+		return $this->NoData();
+	}
+
 	#[HttpMethods(['POST'])]
 	public function CountsByYearForShows(array $showIds)
 	{
