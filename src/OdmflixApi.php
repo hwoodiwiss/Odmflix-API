@@ -81,6 +81,7 @@ class OdmflixApi
 		->AddController(TypeController::class)
 		->AddController(ActorController::class)
 		->AddController(RatingController::class)
+		->AddController(DirectorController::class)
 		->AddController(OptionsController::class);
 
 		$this->controllerCtx = (new ControllerContextBuilder)
@@ -100,6 +101,7 @@ class OdmflixApi
 		$this->diContainer->addInjectable(TypeRepository::class);
 		$this->diContainer->addInjectable(ActorsRepository::class);
 		$this->diContainer->addInjectable(RatingsRepository::class);
+		$this->diContainer->addInjectable(DirectorsRepository::class);
 
 
 	}
